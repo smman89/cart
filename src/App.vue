@@ -18,7 +18,9 @@
             :key="itemKey"
           >
             <p class="goods__title">{{ item.title }} ({{ item.balance }})</p>
-            <span class="goods__price">{{ getRublePrice(item.price) }}</span>
+            <span :class="priceClass + ' goods__price'">{{
+              getRublePrice(item.price)
+            }}</span>
             <button class="button" type="button" @click="addToCart(item)">
               +
             </button>
@@ -41,11 +43,11 @@
             <td class="cart__qty">
               <input
                 type="number"
-                min=0
+                min="0"
                 :value="item.qty"
                 @input="(e) => changeQty(item, e)"
               />
-              <span v-if="item.qty > item.balance">Количество ограничено</span>
+              <span v-if="item.qty >= item.balance">Количество ограничено</span>
             </td>
             <td>{{ getRublePrice(item.price) }} руб./шт</td>
             <td>
@@ -56,22 +58,28 @@
           </tr>
         </tbody>
       </table>
-      <span class="cart__amount"
-        >Общая стоимость:{{ getRublePrice(cartAmount) }} руб.</span
-      >
+      <p class="cart__amount">
+        Общая стоимость:
+        <span :class="cartPriceClass"> {{ cartAmount.toFixed(2) }}</span
+        >руб.
+      </p>
     </div>
   </div>
 </template>
 
 
 <script>
+const MAX_EXCHANGE_RATE = 80;
+const MIN_EXCHANGE_RATE = 20;
+
 export default {
   name: "App",
   data() {
     return {
       groupedGoods: [],
       exchangeRate: 50,
-      priceClass: "exchange-price",
+      priceClass: "price",
+      cartPriceClass: "price",
     };
   },
   methods: {
@@ -85,13 +93,27 @@ export default {
       this.$store.dispatch("Goods/load");
     },
     changeQty(item, e) {
-      this.$store.dispatch("Cart/edit", {
-        ...item,
-        qty: Number(e.target.value),
-      });
+     let value = e.target.value;
+      if (value >= 0 && value <= item.balance) {
+        this.$store.dispatch("Cart/edit", {
+          ...item,
+          qty: Number(value),
+        });
+      }
+      this.$forceUpdate()
     },
     removeFromCart(item) {
       this.$store.dispatch("Cart/remove", item);
+    },
+    changeClassName(newValue, oldValue) {
+      let varible =
+        "price " +
+        (newValue > oldValue ? "price--increased" : "price--decreased");
+
+      return varible;
+    },
+    randomPrice(min, max) {
+      return Math.floor(min + Math.random() * (max + 1 - min));
     },
   },
   computed: {
@@ -99,25 +121,29 @@ export default {
       return this.$store.state.Cart.list;
     },
     cartAmount() {
-      return this.$store.getters["Cart/amount"];
+      return this.$store.getters["Cart/amount"](this.exchangeRate);
     },
     goods() {
       return this.$store.state.Goods.list;
     },
   },
   watch: {
+    cartAmount: function (newValue, oldValue) {
+      this.cartPriceClass = this.changeClassName(newValue, oldValue);
+    },
     exchangeRate: function (newValue, oldValue) {
-      this.priceClass =
-        "exchange-price " +
-        (newValue < oldValue
-          ? "exchange-price--increased"
-          : "exchange-price--decreased");
-      setTimeout(() => (this.priceClass = "exchange-price "), 2000);
+      this.priceClass = this.changeClassName(newValue, oldValue);
     },
   },
   mounted() {
     this.loadGoods();
-    setInterval(this.loadGoods, 15000);
+    setInterval(() => {
+      this.exchangeRate = this.randomPrice(
+        MIN_EXCHANGE_RATE,
+        MAX_EXCHANGE_RATE
+      );
+      this.loadGoods;
+    }, 15000);
   },
 };
 </script>
@@ -132,17 +158,17 @@ export default {
   align-items: center;
 }
 
-.exchange-price {
+.price {
   background-color: none;
   margin: 0 auto;
 }
 
-.exchange-price--increased {
-  background-color: green;
+.price--increased {
+  background-color: red;
 }
 
-.exchange-price--decreased {
-  background-color: red;
+.price--decreased {
+  background-color: green;
 }
 
 .exchange-range {
