@@ -93,14 +93,14 @@ export default {
       this.$store.dispatch("Goods/load");
     },
     changeQty(item, e) {
-     let value = e.target.value;
+      let value = e.target.value;
       if (value >= 0 && value <= item.balance) {
         this.$store.dispatch("Cart/edit", {
           ...item,
           qty: Number(value),
         });
       }
-      this.$forceUpdate()
+      this.$forceUpdate();
     },
     removeFromCart(item) {
       this.$store.dispatch("Cart/remove", item);
