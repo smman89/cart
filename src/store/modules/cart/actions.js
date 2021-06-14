@@ -7,8 +7,8 @@ export const add = ({ commit }, item) => {
     commit('add', item)
 }
 
-export const edit = ({ commit }, cart) => {
-    commit('edit', cart)
+export const edit = ({ commit }, item) => {
+    commit('edit', item)
 }
 
 export const remove = ({ commit }, item) => {

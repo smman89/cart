@@ -2,13 +2,25 @@
  * Mutations for the Cart module
  * ============
  */
+function checkBalance(balance, newQuantity, oldQuantity = 0) {
+    let orderBalance = newQuantity + oldQuantity
+    return orderBalance <= balance ? true : false
+}
 
 export default {
     add(state, payload) {
         let i = state.list.findIndex(goods => goods.id === payload.id)
+        let newQuantity = Number(payload.quantity)
+
         if (i > -1) {
-            state.list[i].qty = Number(state.list[i].qty || 0) + Number(payload.qty)
-        } else state.list.push(payload)
+            if (checkBalance(payload.balance, newQuantity, state.list[i].quantity)) {
+                state.list[i].quantity = Number(state.list[i].quantity || 0) + newQuantity
+            }
+        } else {
+            if (checkBalance(payload.balance, newQuantity)) {
+                state.list.push(payload)
+            }
+        }
     },
 
     remove(state, id) {
@@ -17,6 +29,6 @@ export default {
 
     edit(state, payload) {
         let index = state.list.findIndex(item => item.id === payload.id)
-        state.list[index].qty = payload.qty
+        state.list[index].quantity = payload.quantity
     }
 }
