@@ -25,7 +25,7 @@
 import { inject } from "vue";
 export default {
   setup() {
-    const priceClass = inject("priceClass", "price");
+    const priceClass = inject("priceClass");
 
     return {
       priceClass,

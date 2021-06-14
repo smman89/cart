@@ -43,7 +43,7 @@ import { inject } from "vue";
 import CustomInput from "../components/UI/CustomInput.vue";
 export default {
   setup() {
-    const priceClass = inject("priceClass", "price");
+    const priceClass = inject("priceClass");
     return {
       priceClass,
     };
