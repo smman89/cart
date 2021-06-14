@@ -1,5 +1,5 @@
 /* ============
- * Actions for the Cart module
+ * Actions for the Goods module
  * ============
  */
 import NAMES from "../../../names.json";
