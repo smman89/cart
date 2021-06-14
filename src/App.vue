@@ -13,14 +13,12 @@
 
 <script>
 import { provide, ref } from "vue";
-
 import Cart from "./components/Cart.vue";
 import Goods from "./components/Goods.vue";
 import RateExchanger from "./components/RateExchanger.vue";
 
 export default {
   name: "App",
-
   components: {
     Cart,
     Goods,
@@ -33,7 +31,7 @@ export default {
     };
   },
   setup() {
-    let priceClass = ref('price');
+    let priceClass = ref("price");
     provide("priceClass", priceClass);
 
     function changeClassName(newValue, oldValue) {
@@ -76,7 +74,10 @@ export default {
   mounted() {
     this.loadGoods();
     setInterval(() => {
-      let exchangeRate = this.randomPrice(this.MIN_EXCHANGE_RATE, this.MAX_EXCHANGE_RATE);
+      let exchangeRate = this.randomPrice(
+        this.MIN_EXCHANGE_RATE,
+        this.MAX_EXCHANGE_RATE
+      );
       this.$store.dispatch("Rate/edit", exchangeRate);
       this.loadGoods;
     }, 15000);

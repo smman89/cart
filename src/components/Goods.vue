@@ -22,14 +22,14 @@
 </template>
 
 <script>
-import {inject} from 'vue'
+import { inject } from "vue";
 export default {
   setup() {
-    const priceClass = inject('priceClass', 'price')
+    const priceClass = inject("priceClass", "price");
 
     return {
-      priceClass
-    }
+      priceClass,
+    };
   },
   computed: {
     goods() {
@@ -40,7 +40,7 @@ export default {
     getPrice(price) {
       return this.$store.getters["Rate/getRublePrice"](price);
     },
-    addToCart(item) {      
+    addToCart(item) {
       this.$store.dispatch("Cart/add", { ...item, quantity: 1 });
     },
   },

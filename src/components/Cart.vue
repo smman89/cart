@@ -44,7 +44,6 @@ import CustomInput from "../components/UI/CustomInput.vue";
 export default {
   setup() {
     const priceClass = inject("priceClass", "price");
-
     return {
       priceClass,
     };

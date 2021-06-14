@@ -2,7 +2,7 @@
   <div class="exchange">
     <div>Курс: min={{ min }} р.</div>
     <div class="exchange__range">
-      <span  class="exchange__value" :class="priceClass">{{ modelValue }}</span>
+      <span class="exchange__value" :class="priceClass">{{ modelValue }}</span>
       <input
         class="exchange__input"
         type="range"
@@ -17,14 +17,14 @@
 </template>
 
 <script>
-import {inject} from 'vue'
+import { inject } from "vue";
 export default {
   setup() {
-    const priceClass = inject('priceClass', 'price')
+    const priceClass = inject("priceClass", "price");
 
     return {
-      priceClass
-    }
+      priceClass,
+    };
   },
 
   props: {
@@ -43,8 +43,7 @@ export default {
   },
   methods: {
     change(e) {
-      this.$emit("update:modelValue",  Number(e.target.value));
-     
+      this.$emit("update:modelValue", Number(e.target.value));
     },
   },
 };
